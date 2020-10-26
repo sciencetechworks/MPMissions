@@ -8,15 +8,15 @@ class EditorData
 	toggles=1;
 	class ItemIDProvider
 	{
-		nextID=1935;
+		nextID=1938;
 	};
 	class MarkerIDProvider
 	{
-		nextID=9;
+		nextID=12;
 	};
 	class LayerIndexProvider
 	{
-		nextID=2183;
+		nextID=2190;
 	};
 	class Camera
 	{
@@ -371,7 +371,7 @@ class Mission
 	};
 	class Entities
 	{
-		items=43;
+		items=46;
 		class Item0
 		{
 			dataType="Marker";
@@ -2900,6 +2900,36 @@ class Mission
 			{
 			};
 			id=1932;
+		};
+		class Item43
+		{
+			dataType="Marker";
+			position[]={7917.6689,30.563999,10630.366};
+			name="NOAIRTraffic1";
+			text="NOAIRTraffic1";
+			type="mil_circle";
+			id=1935;
+			atlOffset=-0.00029373169;
+		};
+		class Item44
+		{
+			dataType="Marker";
+			position[]={7915.5679,29.601999,10210.281};
+			name="NOAIRTraffic2";
+			text="NOAIRTraffic2";
+			type="mil_circle";
+			id=1936;
+			atlOffset=0.00022315979;
+		};
+		class Item45
+		{
+			dataType="Marker";
+			position[]={7917.6689,30.111,9867.9131};
+			name="NOAIRTraffic3";
+			text="NOAIRTraffic3";
+			type="mil_circle";
+			id=1937;
+			atlOffset=-0.0001449585;
 		};
 	};
 	class Connections
