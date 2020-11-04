@@ -16,7 +16,7 @@
 	unit6
 	];*/
 	
-RYD_HAS_Limit = 4;//uses limit of airlift support. Set negative value for unlimited uses
+RYD_HAS_Limit = -1;//uses limit of airlift support. Set negative value for unlimited uses
 RYD_HAS_RadioReq = "";//calls available, if any assigned unit's item (including weapons in use and backpack) classname contains this string. Leave empty for no item restriction.
 RYD_HAS_VoiceChat = false;//if there should be played kbTell sentences (if available). If false - sidechat text sentences will be used instead (no voice, but better coverage). Ignored for supply drop - text chat only
 RYD_HAS_whenInside = true;//if new airlift task should begin also when there is no airlift pending and at least one RYD_HAS_STT unit get in RYD_HAS_Chopper
