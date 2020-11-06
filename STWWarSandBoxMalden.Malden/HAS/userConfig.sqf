@@ -96,7 +96,7 @@ RYD_HAS_RopeAttachPoints = ////optional setting of rope attachement points in mo
 RYD_HAS_SupplyDrop_SlingLoad = false;//should the supply call be performed using slingload. If not - parachute drop will be used instead.
 RYD_HAS_SupplyDrop_onMapClick = true;//set to true to mark drop position with map click. If false - by default usual smoke/flare etc. signal required by the pilot, unless no signal is defined - in that case supply will be dropped at caller's initial position
 RYD_HAS_SupplyDrop_attachFlareAndSmoke = true;//if landed supply container should be marked with light and smoke
-RYD_HAS_SupplyDrop_Arsenal = false;//if true, Virtual Arsenal access will be added to the supply box
+RYD_HAS_SupplyDrop_Arsenal = true;//if true, Virtual Arsenal access will be added to the supply box
 
 //RYD_HAS_SupplyDrop_Prepared = [];//holds optional prepared boxes as supply to be dropped, that will be used before default, spawned boxes
 RYD_HAS_SupplyCall_ContainerClass = "B_supplyCrate_F";//in fact, can be also any vehicle, but heli must be able to lift its weight. 
