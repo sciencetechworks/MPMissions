@@ -20,10 +20,10 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={8061.5854,51.061466,10382.268};
-		dir[]={0.77731436,-0.23206268,-0.58482534};
-		up[]={0.18545285,0.97269213,-0.13952895};
-		aside[]={-0.6012339,-8.4750354e-008,-0.79912239};
+		pos[]={8064.7251,38.022415,10564.602};
+		dir[]={0.79840815,-0.028656876,0.60152495};
+		up[]={0.022913702,0.99958324,0.017262977};
+		aside[]={0.60176843,3.3312244e-007,-0.79872936};
 	};
 };
 binarizationWanted=0;
@@ -264,7 +264,7 @@ class Mission
 	};
 	class Entities
 	{
-		items=85;
+		items=84;
 		class Item0
 		{
 			dataType="Group";
@@ -5733,7 +5733,7 @@ class Mission
 				};
 			};
 			id=322;
-			atlOffset=-0.0051727295;
+			atlOffset=-0.016178131;
 		};
 		class Item80
 		{
@@ -5852,7 +5852,7 @@ class Mission
 				};
 			};
 			id=334;
-			atlOffset=-0.077142715;
+			atlOffset=-0.010623932;
 		};
 		class Item81
 		{
@@ -5942,65 +5942,14 @@ class Mission
 		};
 		class Item83
 		{
-			dataType="Group";
-			side="West";
-			class Entities
-			{
-				items=1;
-				class Item0
-				{
-					dataType="Object";
-					class PositionInfo
-					{
-						position[]={8088.603,30.714876,10575.939};
-						angles[]={6.2799911,4.5854688,0.0095993113};
-					};
-					side="West";
-					flags=6;
-					class Attributes
-					{
-					};
-					id=341;
-					type="rhsusf_airforce_jetpilot";
-				};
-			};
-			class Attributes
-			{
-			};
-			class CrewLinks
-			{
-				class LinkIDProvider
-				{
-					nextID=1;
-				};
-				class Links
-				{
-					items=1;
-					class Item0
-					{
-						linkID=0;
-						item0=341;
-						item1=340;
-						class CustomData
-						{
-							role=1;
-						};
-					};
-				};
-			};
-			id=339;
-			atlOffset=-2.4795532e-005;
-		};
-		class Item84
-		{
 			dataType="Object";
 			class PositionInfo
 			{
 				position[]={8088.5972,31.594234,10575.918};
 				angles[]={6.2799911,4.5854688,0.0095993113};
 			};
-			side="West";
-			flags=6;
+			side="Empty";
+			flags=4;
 			class Attributes
 			{
 				pylons="rhs_mag_ANALQ131;rhs_mag_gbu12;rhs_mag_agm65d;rhs_mag_cbu100_3;rhs_mag_cbu100;;rhs_mag_cbu100;rhs_mag_cbu100_3;rhs_mag_agm65d;rhs_mag_gbu12;rhs_mag_aim9m_2;rhsusf_ANALE40_CMFlare_Chaff_Magazine_x16;";
