@@ -1,0 +1,23 @@
+#include "AF_Keypad\AF_KP_defines.hpp"
+#include "AF_Keypad\AF_KP_dialogs.hpp"
+#include "JWC_CASFS\casDefine.hpp"
+#include "JWC_CASFS\casMenu.hpp"
+
+loadScreen = "pictures\intro.paa";
+
+respawn = "BASE";
+respawndelay = 5;
+RespawnDialog = 1;
+respawnTemplates[] = {"MenuPosition"}; 
+
+briefing = 0;
+debriefing = 0;
+author = "Cpt Horny"; 
+onLoadName = "ScienceTechWorks"; 
+onLoadMission = "War Sandbox"; 
+
+class CfgFunctions
+{
+	#include "functions\fhq_tasktracker.hpp"
+	#include "functions\actionMenu.cpp"
+};
