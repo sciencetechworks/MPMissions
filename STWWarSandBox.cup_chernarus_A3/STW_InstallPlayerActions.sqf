@@ -302,17 +302,17 @@ menu = [
 removeAllActions player;
 [ menu, player, false, 5, [ false, true, true, false ] ] call LARs_fnc_menuStart;
 
-/*
+
+// ACE STW ACTIONS
 if (isNil "STWACTIONS") then
 {
-
 	// ADD ACE ACTION
 	_action = ["ScienceTechWorksAction","STW","",{},{true}] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions"], _action,true] call ace_interact_menu_fnc_addActionToClass;
 
 	// ADD ACE ACTION
 	_condition = {
-	  true
+	  true  
 	};
 	_statement = {
 		if (STW_ALLOW_TELEPORT) then
@@ -327,7 +327,7 @@ if (isNil "STWACTIONS") then
 			_playerName = name player;
 			_msg= format ["%1 is requesting teleport.",_playerName];
 			[-1, {player globalChat _this}, _msg] call CBA_fnc_globalExecute;
-		};
+		};		
 	};
 	_action = ["TeleportAction","Teleport to base","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
@@ -340,7 +340,7 @@ if (isNil "STWACTIONS") then
 						_playerName = name player;
 						_msg= format ["%1 is opening the arsenal.",_playerName];
 						[-1, {player globalChat _this}, _msg] call CBA_fnc_globalExecute;
-						["Open",true] spawn BIS_fnc_arsenal;
+						["Open",true] spawn BIS_fnc_arsenal;	
 					} else
 					{
 					  _playerName = name player;
@@ -350,14 +350,14 @@ if (isNil "STWACTIONS") then
 				};
 	_action = ["ArsenalAction","Arsenal","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+	
 	// PERSISTENCE MENU
 	_condition= {true};
 	_statement={
 				};
 	_action = ["PersistenceAction","Persistence","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+	
 	// ADD ACE ACTION
 	_condition= {true};
 	_statement={
@@ -366,12 +366,12 @@ if (isNil "STWACTIONS") then
 					_stwPersistenceDatabase = ["new", "profile"] call OO_PDW;
 					_bool = ["saveInventory", ["PersistedInventory", player]] call _stwPersistenceDatabase;
 					diag_log format ["Persistence save inventory result:%1",_bool];
-					hint format ["Inventory Saved: %1",_bool];
+					hint format ["Inventory Saved: %1",_bool];	
 				};
 	_action = ["SaveInventory","Save Inventory","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","PersistenceAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
-
+	
+	
 	// ADD ACE ACTION
 	_condition= {true};
 	_statement={
@@ -388,11 +388,11 @@ if (isNil "STWACTIONS") then
 					_stwPersistenceDatabase = ["new", "profile"] call OO_PDW;
 					_bool = ["loadInventory", ["PersistedInventory", player]] call _stwPersistenceDatabase;
 					diag_log format ["Persistence load inventory result:%1",_bool];
-					hint format ["Inventory Loaded: %1",_bool];
+					hint format ["Inventory Loaded: %1",_bool];	
 				};
 	_action = ["LoadInventory","Load Inventory","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","PersistenceAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+	
 	// ADD ACE ACTION
 	_condition= {true};
 	_statement={
@@ -402,7 +402,7 @@ if (isNil "STWACTIONS") then
 				};
 	_action = ["SaveStatus","Save Status","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","PersistenceAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+	
 	// ADD ACE ACTION
 	_condition= {true};
 	_statement={
@@ -412,8 +412,8 @@ if (isNil "STWACTIONS") then
 				};
 	_action = ["LoadStatus","Load Status","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","PersistenceAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
-
+	
+	
 	if (toUpper(name player) in STW_REQUEST_CAS_ALLOWED_PLAYERS) then
 	{
 		// ADD ACE ACTION
@@ -430,17 +430,8 @@ if (isNil "STWACTIONS") then
 					};
 		_action = ["RequestCAS","Request CAS","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
-		// ADD ACE ACTION
-		_condition= {true};
-		_statement={
-					currentTask player setTaskState "Succeeded";
-					["Task successful","hint",true,false,false] call BIS_fnc_MP;
-					};
-		_action = ["MissionSucessful","Mission Sucessful","",_statement,_condition] call ace_interact_menu_fnc_createAction;
-		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
 	};
-
+	
 
 	// ADD ACE ACTION
 	bulletCamHdl=nil;
@@ -448,11 +439,11 @@ if (isNil "STWACTIONS") then
 	_statement={
 					if (isNil "bulletCamHdl") then
 					{
-						bulletCamHdl=player addEventHandler ["Fired",
+						bulletCamHdl=player addEventHandler ["Fired", 
 						{
 							_null = _this spawn {
 								_missile = _this select 6;
-								_cam = "camera" camCreate (position player);
+								_cam = "camera" camCreate (position player); 
 								_cam cameraEffect ["External", "Back"];
 								waitUntil {
 									if (isNull _missile) exitWith {true};
@@ -460,7 +451,7 @@ if (isNil "STWACTIONS") then
 									_cam camSetRelPos [0,-3,0];
 									_cam camCommit 0;
 								};
-								sleep 0.4;
+								sleep 0.4;      
 								_cam cameraEffect ["Terminate", "Back"];
 								camDestroy _cam;
 								player removeEventHandler ["Fired", bulletCamHdl];
@@ -475,15 +466,15 @@ if (isNil "STWACTIONS") then
 				};
 	_action = ["BulletCamAction","Bullet Cam On","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 	[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+	
 };
 
-
-if ((name player)=="Cpt Horny") then
+diag_log "INSTALLING ACE STWACTIONS";
+if ((name player)=="Cpt Horny") then 
 {
 	if (isNil "STWACTIONS") then
 	{
-
+		diag_log "INSTALLING ACE STWACTIONS FOR CPT HORNY";
 		/////////////////////////////////////////
 		// ADD ACE ACTION
 		_condition= {true};
@@ -491,85 +482,81 @@ if ((name player)=="Cpt Horny") then
 					};
 		_action = ["AllowAction","Allowances","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+		
 		// ADD ACE ACTION
 		_condition = {
-		  true
+		  true  
 		};
 		_statement = {
 			STW_ALLOW_ARSENAL=!STW_ALLOW_ARSENAL;
 			publicVariable "STW_ALLOW_ARSENAL";
 			_msg= format ["Arsenal allowed: %1",STW_ALLOW_ARSENAL];
-			hint _msg;
+			hint _msg;	
 		};
 		_action = ["AllowArsenalAction","Allow Arsenal","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","AllowAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+		
 		// ADD ACE ACTION
 		_condition = {
-		  true
+		  true  
 		};
 		_statement = {
 			STW_ALLOW_TELEPORT=!STW_ALLOW_TELEPORT;
 			publicVariable "STW_ALLOW_TELEPORT";
 			_msg= format ["Teleport allowed: %1",STW_ALLOW_TELEPORT];
-			hint _msg;
+			hint _msg;	
 		};
 		_action = ["AllowTeleportAction","Allow Teleport","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","AllowAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
-
+		
+		
 		// ADD ACE ACTION
 		_condition = {
-		  true
+		  true  
 		};
 		_statement = {
-			call STWFAddFlashLightToEnemyUnits;
+			call STWFAddFlashLightToEnemyUnits;	
 		};
 		_action = ["GiveFlashLightsToEnemiesAction","Enemies FlashLights","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","AllowAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+		
 		// ADD ACE ACTION
 		_condition = {
-		  true
+		  true  
 		};
 		_statement = {
-			call STWFAddNightVisionToEnemyUnits;
+			call STWFAddNightVisionToEnemyUnits;	
 		};
 		_action = ["GiveNVGooglesToEnemiesAction","Enemies NVGoogles","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","AllowAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
-
+		
+				
 		// ADD ACE ACTION
 		_condition = {
-		  true
+		  true  
 		};
 		_statement = {
-			call STWFAddNightVisionToFriendUnits;
+			call STWFAddNightVisionToFriendUnits;	
 		};
 		_action = ["GiveNVGooglesToFriendsAction","Friends NVGoogles","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","AllowAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+		
 		// ADD ACE ACTION
 		_condition = {
-		  true
+		  true  
 		};
 		_statement = {
-			call STWFAddFlashLightToFriendUnits;
+			call STWFAddFlashLightToFriendUnits;	
 		};
 		_action = ["GiveFlashLightsToFriendsAction","Friends FlashLights","",_statement,_condition] call ace_interact_menu_fnc_createAction;
 		[(typeOf player), 1, ["ACE_SelfActions","ScienceTechWorksAction","AllowAction"], _action] call ace_interact_menu_fnc_addActionToClass;
-
+		
 	}; // ENDIF IS NIL STWACTIONS
+};
 
-	if (isNil "STWACTIONS") then
+if (isNil "STWACTIONS") then
 	{
 		STWACTIONS=["INSTALLED"];
 	};
 
-
-};
-
-
-*/
 

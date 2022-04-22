@@ -1,3 +1,10 @@
+if (isServer) then 
+	{
+	call compile preprocessFile "HAS\userConfig.sqf";
+	call compile preprocessFile "HAS\HAS_fnc.sqf";
+	[] call RYD_HAS_Init;
+	};
+	
 _nul = []execVM "AF_Keypad\AF_KP_vars.sqf";
 //nul = [] execVM "placeBuoys.sqf";
 //nul = [] execVM "placeRoadStreetLamps.sqf";
@@ -7,6 +14,7 @@ _nul = []execVM "AF_Keypad\AF_KP_vars.sqf";
 //nul = [] execVM "land\STW_Airports.sqf";
 //nul = [] execVM "land\STW_StrategicPoints.sqf";
 execVM "JWC_CASFS\initCAS.sqf";
+
 
 STW_HOW_MANY_BOAT_PATROLS=0;
 STW_HOW_MANY_HELO_PATROLS=0;
