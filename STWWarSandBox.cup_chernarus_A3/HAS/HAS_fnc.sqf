@@ -1,6 +1,6 @@
 RYD_HAS_Init = 
 	{
-	systemChat "HAS 1.91";
+	systemChat "HAS 1.96";
 	
 	if (isNil "RYD_HAS_Base") exitWith 
 		{
@@ -74,6 +74,7 @@ RYD_HAS_Init =
 	publicVariable "RYD_HAS_Limit";
 	publicVariable "RYD_HAS_SupplyDrop_SlingLoad";
 	publicVariable "RYD_HAS_STT";
+	publicVariable "RYD_HAS_ContourFlightMode";
 	
 	if not (isNil "RYD_HAS_Chopper") then
 		{
@@ -127,10 +128,13 @@ RYD_HAS_Init =
 						
 						if not (_alive) then
 							{
-							[_x] call RYD_HAS_RespawnHeliCheck
+							[_x] call RYD_HAS_RespawnHeliCheck;
+							RYD_HAS_allChoppers set [_foreachIndex,objNull];
 							}
 						}
-					foreach RYD_HAS_allChoppers
+					foreach RYD_HAS_allChoppers;
+					RYD_HAS_allChoppers = RYD_HAS_allChoppers - [objNull];
+					publicVariable "RYD_HAS_allChoppers";
 					}
 				}
 			};
@@ -231,6 +235,8 @@ RYD_HAS_Init =
 	RYD_HAS_isSupplyRun = false; publicVariable "RYD_HAS_isSupplyRun";
 	RYD_HAS_isCASRun = false; publicVariable "RYD_HAS_isCASRun";
 	RYD_HAS_kEHIx = -1; publicVariable "RYD_HAS_kEHIx";
+	RYD_TI_EFEH = -1;publicVariable "RYD_TI_EFEH";
+	RYD_TI_ControlTI = false;publicVariable "RYD_TI_ControlTI";
 	//RYD_HAS_dEHIx = -1; publicVariable "RYD_HAS_dEHIx";
 	
 	RYD_HAS_dEHIx = addMissionEventHandler ["HandleDisconnect",{nul = _this spawn RYD_HAS_atDisconnect}];
@@ -472,6 +478,7 @@ RYD_HAS_atCalled =
 		RYD_HAS_radioCalled = false; publicVariable "RYD_HAS_radioCalled";
 		};
 		
+	diag_log "atcalled clear helis";
 	[] call RYD_HAS_ClearHelis;
 	
 	if ((count RYD_HAS_allChoppers) < 1) exitWith
@@ -2154,7 +2161,10 @@ RYD_HAS_SupplyCall =
 		else
 			{
 			_wps = [RYD_HAS_Chopper] call RYD_HAS_ExecuteRoute;
-			_wp = group RYD_HAS_Chopper addWaypoint [_dropPos, 300];	
+			_wp = group RYD_HAS_Chopper addWaypoint [_dropPos, 300];
+			_wp setWaypointType "MOVE";
+			
+			_wp = _gp addWaypoint [(waypointPosition _wp), 0];
 			_wp setWaypointType "LOITER";
 			_wp setWaypointLoiterType "CIRCLE";
 			_wp setWaypointLoiterRadius 200;
@@ -2441,11 +2451,15 @@ RYD_HAS_SupplyCall =
 		else
 			{
 			_wps = [RYD_HAS_Chopper] call RYD_HAS_ExecuteRoute;
-			_wp = group RYD_HAS_Chopper addWaypoint [_dropPos, 300];	
+			_wp = group RYD_HAS_Chopper addWaypoint [_dropPos, 300];
+			_wp setWaypointType "MOVE";
+			
+			_wp = _gp addWaypoint [(waypointPosition _wp), 0];
 			_wp setWaypointType "LOITER";
 			_wp setWaypointLoiterType "CIRCLE";
 			_wp setWaypointLoiterRadius 200;
-					
+				
+
 			waitUntil
 				{
 				sleep 1;
@@ -2793,17 +2807,23 @@ RYD_HAS_RespawnHeliCheck =
 	params ["_oldHeli"];
 	
 		{
-		if (((_x select 0) select 0) isEqualTo _oldHeli) exitWith
+		if ((((_x select 0) select 0) isEqualTo _oldHeli) and {not (((_x select 0) select 0) in (missionNameSpace getVariable ["RYD_HAS_respawnPending",[]]))}) exitWith
 			{
 			if (RYD_HAS_RespawnHelis > 0) then
 				{
 				RYD_HAS_RespawnHelis = RYD_HAS_RespawnHelis - 1
 				};
-				
-			_x spawn RYD_HAS_SpawnHeli
+
+			_pending = missionNameSpace getVariable ["RYD_HAS_respawnPending",[]];
+			_pending pushbackUnique ((_x select 0) select 0);
+			missionNameSpace setVariable ["RYD_HAS_respawnPending",_pending];
+			_arr = +_x;
+			RYD_HAS_ChopperPool set [_foreachIndex,objNull];
+			_arr spawn RYD_HAS_SpawnHeli;
 			}
 		}
-	foreach RYD_HAS_ChopperPool
+	foreach RYD_HAS_ChopperPool;
+	RYD_HAS_ChopperPool = RYD_HAS_ChopperPool - [objNull]
 	};
 	
 RYD_HAS_SpawnHeli = 
@@ -2830,7 +2850,10 @@ RYD_HAS_SpawnHeli =
 	_newGp = createVehicleCrew _newHeli;
 	_newGp deleteGroupWhenEmpty true;
 	
-	_newHeli call RYD_HAS_NewChopper
+	_newHeli call RYD_HAS_NewChopper;
+	_pending = missionNameSpace getVariable ["RYD_HAS_respawnPending",[]];
+	_pending = _pending - [_oldHeli,objNull];
+	missionNameSpace setVariable ["RYD_HAS_respawnPending",_pending];
 	};
 	
 RYD_HAS_NewChopper = 
@@ -4018,7 +4041,7 @@ RYD_HAS_ClearUnits =
 	};
 	
 RYD_HAS_ClearHelis = 
-	{
+	{	
 		{
 		if ((isNull _x) or {not (alive _x)}) then
 			{
@@ -4231,7 +4254,10 @@ RYD_HAS_Signal =
 	if ((count _signalClasses) > 0) then
 		{
 		private _gp = group RYD_HAS_Chopper;
-		_wp = _gp addWaypoint [_pickPos, 300];	
+		_wp = _gp addWaypoint [_pickPos, 300];
+		_wp setWaypointType "MOVE";
+		
+		_wp = _gp addWaypoint [(waypointPosition _wp), 0];
 		_wp setWaypointType "LOITER";
 		_wp setWaypointLoiterType "CIRCLE";
 		_wp setWaypointLoiterRadius _rds;
@@ -4486,6 +4512,8 @@ RYD_HAS_AscentCounter =
 	
 RYD_HAS_AutoGuide = 
 	{
+	if (RYD_TI_ControlTI) exitWith {};
+	
 	params ["_heli","_lvl","_var","_refPos","_tol","_vMpl"];
 	
 	private _vel = velocity RYD_HAS_Chopper;
@@ -4510,8 +4538,10 @@ RYD_HAS_AutoGuide =
 	
 RYD_HAS_AutoGuideB = 
 	{
-	params ["_heli","_lvl","_var","_refPos","_tol","_vMpl","_frc"];
+	if (RYD_TI_ControlTI) exitWith {};
 	
+	params ["_heli","_lvl","_var","_refPos","_tol","_vMpl","_frc"];
+		
 	private _vel = velocity RYD_HAS_Chopper;
 	private _lvl2 = (getPos RYD_HAS_Chopper) select 2;
 
@@ -5827,8 +5857,30 @@ RYD_HAS_ChangeAltitude =
 	_lvl = _lvl + _diff;
 	if (_lvl < 1) exitWith 
 		{
-		//hint "Chosen flight ceiling too low."
-		"Chosen flight ceiling too low." remoteExec ["hint"]; 
+		if ((RYD_HAS_ContourFlightMode) and {not ((RYD_HAS_isSupplyRun) and {(RYD_HAS_SupplyDrop_SlingLoad)})}) then
+			{
+			if (RYD_TI_EFEH < 0) then
+				{
+				RYD_HAS_Chopper flyInHeight 35;
+				RYD_HAS_Chopper setVariable ["RYD_HAS_myLvl",35];
+				RYD_HAS_ChopperLvl = 35;				
+								
+				("Contour flight") remoteExec ["hint"];
+				[RYD_HAS_Chopper,((getNumber (configFile >> "CfgVehicles" >> (typeOf RYD_HAS_Chopper) >> "maxSpeed"))/3.6),10,2,0,1,true,0.2,false] call RYD_TI_TimidIcarus;
+				};
+			}
+		else
+			{
+			//hint "Chosen flight ceiling too low."
+			"Chosen flight ceiling too low." remoteExec ["hint"]; 
+			};
+		};
+		
+	if not (RYD_TI_EFEH < 0) then
+		{
+		removeMissionEventHandler ["EachFrame",RYD_TI_EFEH];
+		RYD_TI_EFEH = -1;
+		publicVariable "RYD_TI_EFEH";
 		};
 		
 	_txt = "";
@@ -5846,6 +5898,339 @@ RYD_HAS_ChangeAltitude =
 	};
 	
 publicVariable "RYD_HAS_ChangeAltitude";
+
+RYD_TI_TimidIcarus = 
+	{
+	private _heli = param [0,objNull,[objNull]];//helicopter to be controlled. Default : objNull (code exits)
+	if (isNull _heli) exitWith {};
+	
+	private _desiredSpeed = param [1,((getNumber (configFile >> "CfgVehicles" >> (typeOf _heli) >> "maxSpeed"))/3.6),[0]];//speed in m/s, that heli will try to maintain most of the time. Default: max config speed. The faster, the more risky flight.
+	private _desiredAltitude = param [2,10,[0]];//AGL ceiling in meters: controlled heli will strive to maintain that height abouve the ground as much, as possible. Default: 10. Values below 10 not recommended. 
+	private _overflyBuffer = param [3,2,[0]];//additional buffer in meters added to calculated minimal height necessary to fly over an obstacle (map object etc.). Default: 2. Values below 2 not recommended. 
+	private _obstacleDetectMode = param [4,0,[0]];//setting for obstacles detection method. 0 - less CPU hungry, pays attention only to the map objects, ignores editor-placed objects and very few exceptions amongst map objects. 1 - detects non-map objects as well, may cause a bit more bumpy ride, than necessary and recognize as an obstacle also objects, that should be ignored, can be more CPU-hungry. Default: 0 (recommended unless insuffice in certain scenarios)
+	private _obstacleDetectRange = param [5,1,[0]];//a multiplier of obstacles detection radius. Default: 1, which translates to the bigger of the two: (heli full length + 10) OR 20 meters. Too big will eat FPS fast, too low will tend to ignore big objects, that still can be collided with.
+	private _safetyPush = param [6,true,[true]];//if this is enabled and code would detect, that heli gets dangerously close to the ground, emergency "pull up!" vertical velocity will be added, which often may help to avoid collision. In such situation it will override sharpness setting. Default: true.
+	private _sharpness = param [7,0.2,[0]];//sharpness factor. The lower value, the more smoothed flight, but also more sluggish reactions which increase collision risk. Default: 0.2. Values 0.1-0.2 are risky. Values below 0.1 not recommended. Maximum: 1. Values above 1 may cause crazy behavior.  
+	private _debug = param [8,false,[true]];//Debug mode adding 3D visualisation markers and some numerical data on the screen. Default: false. 
+	
+	RYD_TI_Params = [_heli,_desiredSpeed,_desiredAltitude,_overflyBuffer,_obstacleDetectMode,_obstacleDetectRange,_safetyPush,_sharpness,_debug];
+	
+	RYD_TI_ContourFlight = 
+		{
+		if (isGamePaused) exitWith {};
+		params ["_heli","_desiredSpeed","_desiredAltitude","_overflyBuffer","_obstacleDetectMode","_obstacleDetectRange","_safetyPush","_sharpness","_debug"];
+		if (isNull _heli) exitWith {};
+
+		RYD_TI_Control = false;
+		if (_debug) then
+			{			
+			if (isNil "RYD_TI_a1") then
+				{
+				RYD_TI_a1 = createvehicle ["Sign_Arrow_Large_F",(_heli modelToWorld [0,0,10]),[],0,"CAN_COLLIDE"];
+				RYD_TI_a2 = createvehicle ["Sign_Arrow_Large_Blue_F",(_heli modelToWorld [0,0,10]),[],0,"CAN_COLLIDE"];
+				RYD_TI_a3 = createvehicle ["Sign_Arrow_Large_Green_F",(_heli modelToWorld [0,0,10]),[],0,"CAN_COLLIDE"];
+				};			
+			};
+		
+		_gp = group _heli;
+		_bbH = boundingBoxReal _heli;
+		_size = ((_bbH select 1) select 0) - ((_bbH select 0) select 0);
+		_sizeL = ((_bbH select 1) select 1) - ((_bbH select 0) select 1);
+
+		_addH = abs ((_bbH select 0) select 2);
+		_overflyBuffer = _overflyBuffer + _addH;
+		_finish = 0;
+		_vel = _desiredSpeed;
+		_desiredAlt = _desiredAltitude;
+
+		if ((isNull _heli) or {not (alive _heli) or {(isNull _gp)}}) exitWith {true};
+
+		_cP = currentPilot _heli;
+		
+		if (not (isTouchingGround _heli) and {(canMove _heli) and {((fuel _heli) > 0) and {not (isNull _cP) and {(alive _cP) and {not (isPlayer _cP) and {((count (waypoints _gp)) > 0)}}}}}}) then
+			{
+			_cw = currentWaypoint _gp;
+			_cw = [_gp,_cw];
+			_wPos = waypointPosition _cw;
+			if (_wPos isEqualTo [0,0,0]) exitWith {};
+			
+			
+		
+			_hPos = getPosASL _heli;
+			
+			_cAlt = _hPos select 2;	
+			_cVel = velocity _heli;
+			_dst = _hPos distance2D _wPos;
+			
+			if ((toUpper (waypointType _cw)) isEqualTo "LOITER") exitWith {};
+			
+			_cVelH = _cVel distance2D [0,0,0];
+			
+			_rAlt = (_heli modelToWorld [0,((_bbH select 1) select 1),((_bbH select 0) select 2)]) select 2;
+			_rAlt2 = (_heli modelToWorldWorld [0,((_bbH select 1) select 1),((_bbH select 0) select 2)]) select 2;
+			
+			_rAltFront = _rAlt min _rAlt2;
+			
+			_rAlt3 = (_heli modelToWorld [0,((_bbH select 0) select 1),((_bbH select 0) select 2)]) select 2;
+			_rAlt4 = (_heli modelToWorldWorld [0,((_bbH select 0) select 1),((_bbH select 0) select 2)]) select 2;
+			
+			_rAltRear = _rAlt3 min _rAlt4;
+			
+			_cAltATL = _rAltFront min _rAltRear;
+
+			if ((_dst > 100) and {(_cAltATL > 5) or {(_cVelH > 10)}}) then
+				{
+				RYD_TI_ControlTI = true;publicVariable "RYD_TI_ControlTI";
+				_dirH = getDir _heli;
+				_dir = _heli getDir _wPos;
+				_diff0 = _dirH - _dir;
+				_diff0 = (sin _diff0) atan2 (cos _diff0);
+				_diff = abs _diff0;
+				
+				if ((_diff < 1) or {(_cVelH > 5) and {(_diff < 10)}}) then
+					{
+					RYD_TI_Control = true;
+					if not (RYD_TI_wasControl) then
+						{
+						_heli setVariable ["RYD_TI_lastWP",_hPos]
+						};
+											
+					_myLastWP = _heli getVariable ["RYD_TI_lastWP",[-1000,-1000,-1000]];
+					_finish = (linearConversion [100,200,_dst,1,0,true]) max (linearConversion [0,100,(_heli distance2D _myLastWP),1,0,true]);
+					
+					_cVelN = _cVel distance [0,0,0];
+					
+					_range = _size + _cVelN + 10;
+					_rad = ((_size + 10) max 20) * _obstacleDetectRange;
+					_mplOH = 1;
+					
+					_passingO = _heli getVariable ["RYD_TI_PassingO",objNull];
+					if not (isNull _passingO) then
+						{
+						_dirPO = _heli getDir _passingO;
+						_diffPO = _dirH - _dirPO;
+						_diffP0 = abs ((sin _diffPO) atan2 (cos _diffPO));
+						
+						if (_diffPO > 90) then
+							{
+							_bhd = _heli distance2D _passingO;
+							if (_bhd > ((_sizeL/2) + 10)) then
+								{
+								_passingO = objNull;
+								_heli setVariable ["RYD_TI_PassingO",objNull]
+								}
+							else
+								{
+								_mplOH = (1 - ((_bhd - (_sizeL/2))/((_sizeL/2) + 10))) min 1
+								}
+							}
+						};
+					
+					_topPC = _passingO modelToWorld [0,0,(((boundingBoxReal _passingO) select 1) select 2)];				
+					_obstacleHASL = (ATLtoASL _topPC) select 2;
+					if ("bridgesea" in (toLower (str _passingO))) then
+						{
+						_obstacleHASL = _obstacleHASL + 5
+						};	
+						
+					_obstacleHASL = _obstacleHASL * _mplOH;
+					_corr = 0;
+					_moDst = _range + _rad;
+					_obstacle = objNull;
+					_altASL = ((getTerrainHeightASL _hPos) max 0) + _desiredAltitude;
+
+					for "_i" from (_size/2) to (_range + 50) step (_size/2) do
+						{
+						_pingPos = _heli getPos [_i,_dir];
+						
+						_objects = if (_obstacleDetectMode == 0) then
+							{
+							(nearestTerrainObjects [_pingPos, [], _rad, false, true])
+							}
+						else
+							{
+							_rem = [_heli];
+							_rem appEnd (crew _heli);
+							_birds = _pingPos nearObjects ["Bird",(_rad * 1.5)];
+							_rem appEnd _birds;
+							
+							if (_debug) then
+								{
+								_rem appEnd [RYD_TI_a1,RYD_TI_a2,RYD_TI_a3]
+								};
+							
+							((nearestObjects [_pingPos,[],_rad,true]) - _rem)
+							};
+						
+							{
+							_bbr = boundingBoxReal _x;
+							_topC = _x modelToWorld [0,0,((_bbr select 1) select 2)];
+							_top = _topC select 2;
+							_topASL = (ATLtoASL _topC) select 2;
+							
+							if ("bridgesea" in (toLower (str _x))) then
+								{
+								_topASL = _topASL + 5
+								};
+							
+							_aDst = (_heli distance2D _x) max 1;
+													
+							if ((_topASL > (_altASL - _overflyBuffer)) and {((_top * 4.5) > _aDst) or {(_aDst < _range)}}) then
+								{
+								if (_debug) then
+									{
+									drawIcon3D ["#(argb,8,8,3)color(0,0,0,0)",[1,1,1,1],(_x modelToWorld [0,0,((_bbr select 1) select 2)]),1,1,0,(str (round _topASL)),1,0.035,"PuristaSemibold"];
+									};
+								
+								if (_topASL > _obstacleHASL) then
+									{
+									_obstacleHASL = _topASL;
+									_obstacle = _x;
+									_moDst = _moDst min _aDst;
+									
+									if (_debug) then
+										{
+										RYD_TI_a1 setPosATL (_x modelToWorld [0,0,((_bbr select 1) select 2)]);
+										};
+									};
+								}
+							}
+						foreach _objects;
+						};
+						
+					_heli setVariable ["RYD_TI_PassingO",_obstacle];
+					_obsDst = _moDst;
+					
+					_desiredAlt = _altASL max (_obstacleHASL + _overflyBuffer);
+					
+					if (_finish > 0) then
+						{
+						_desiredAlt = linearConversion [0,1,_finish,_desiredAlt,((((getTerrainHeightASL _hPos) max 0) + 30) max _desiredAlt),true];
+						};
+															
+					_diffAlt = _desiredAlt - _cAlt;
+					_rPingPos = _hPos;
+					_corrM = (_obstacleHASL + _diffAlt)/(sqrt _obsDst);
+					
+					for "_i" from (_size/2) to (_size + _cVelN) step (_size/8) do
+						{
+						_pingPos = _heli getPos [_i,_dir];
+						_pingPos set [2,0];
+						
+						_corr = ((getTerrainHeightASL _pingPos) max 0) - ((getTerrainHeightASL _hPos) max 0) + _diffAlt;
+						if (((abs _corr) > 0) and {(isNull _obstacle) or {(_corr > (_corrM * (sqrt _obsDst)))}}) then
+							{
+							_rPingPos = _pingPos;
+							
+							if (_debug) then
+								{
+								RYD_TI_a2 setPosATL _pingPos;
+								};
+								
+							if ((_corr/(sqrt _i)) > _corrM) then
+								{
+								if (_debug) then
+									{
+									drawIcon3D ["#(argb,8,8,3)color(0,0,0,0)",[1,0.5,0,1],_pingPos,1,1,0,(str (round _corr)),1,0.035,"PuristaSemibold"];
+									};
+									
+								_moDst = _moDst min (_heli distance2D _pingPos);
+								_corrM = _corr/(sqrt _i)
+								};
+							};
+						};
+
+					_cAlt = _cAlt - (((getTerrainHeightASL _rPingPos) max 0) - ((getTerrainHeightASL _hPos) max 0));
+					_diffAlt = _desiredAlt - _cAlt;
+					
+					_halfSpeed = (getNumber (configFile >> "CfgVehicles" >> (typeOf _heli) >> "maxSpeed"))/7.2;
+					_vel = linearConversion [0,1,_finish,_desiredSpeed,(_halfSpeed min _vel),true];
+													
+					if ((_cVelN < _vel) or {((abs _diffAlt) > (10/(_cVelN max 10)))}) then
+						{
+						_altAm = (_diffAlt max 0)/(sqrt (_moDst max 1));
+						_fPos = _hPos getPos [(_moDst max (_altAm * 3)),_dir];
+						_fPos set [2,(_desiredAlt + _altAm)];
+
+						if (_debug) then
+							{
+							RYD_TI_a3 setPosASL _fPos;
+							};
+
+						_safety = if (_safetyPush) then
+							{
+							(sqrt ((((_desiredAltitude/2) max 5) - _cAltATL) max 1))
+							}
+						else
+							{
+							1
+							};
+							
+						_sharpnessF = if (_safety > 1) then
+							{
+							1
+							}
+						else
+							{
+							_sharpness
+							};
+						
+						_vel2 = (_vel * (1 - _sharpnessF)) + (_vel * ((((_moDst max 1))/((_diffAlt max 1)^0.75)) min 1) * _sharpnessF);
+						_vel = (_vel * (1 - _sharpnessF)) + (_vel * ((((_moDst max 1))/((_diffAlt max 1)^0.75)) min 1) * _sharpnessF);
+						
+						_dirV = _hPos vectorFromTo _fPos;
+						_velV = [((((_dirV select 0) * _vel2) * _sharpnessF) + ((_cVel select 0) * (1 - _sharpnessF))),((((_dirV select 1) * _vel2) * _sharpnessF) + ((_cVel select 1) * (1 - _sharpnessF))),(((_dirV select 2) * (_vel * _safety * _sharpnessF)) + ((_cVel select 2) * (1 - _sharpnessF)))];
+						_velF = _velV distance [0,0,0];
+
+						_heli addTorque (_heli vectorModelToWorld [(((getMass _heli)^1.3)/16) * (sqrt (_velF/100)),0,0]);
+						_heli setVelocity _velV;
+						}
+					}
+				else
+					{
+					if (not (_diff < 5) and {(_cAlt > 1)}) then
+						{
+						if (_diff0 > 0) then
+							{
+							_heli addTorque (_heli vectorModelToWorld [0,0,-((((getMass _heli)^1.35)/25) * 3)]);
+							}
+						else
+							{
+							_heli addTorque (_heli vectorModelToWorld [0,0,((((getMass _heli)^1.35)/25) * 3)]);
+							}
+						};
+					}
+				}
+			else
+				{
+				RYD_TI_ControlTI = false;publicVariable "RYD_TI_ControlTI";
+				}
+			}
+		else
+			{
+			RYD_TI_ControlTI = false;publicVariable "RYD_TI_ControlTI";
+			};
+			
+		RYD_TI_wasControl = RYD_TI_Control;
+			
+		if (_debug) then
+			{
+			hintSilent format ["spd: %1\nalt: %2\nfps: %3\nfn: %4\nctrl: %5",((velocity _heli) distance [0,0,0]),(((getPosATL _heli) select 2) min ((getPosASL _heli) select 2)),diag_fps,_finish,RYD_TI_Control];
+			};
+		};	
+
+	if (_debug) then
+		{
+		systemChat format ["Params: %1",RYD_TI_Params];
+		};
+
+	RYD_TI_wasControl = false;	
+	RYD_TI_Control = false;
+	RYD_TI_EFEH = addMissionEventHandler ["EachFrame",{RYD_TI_Params call RYD_TI_ContourFlight}];
+	publicVariable "RYD_TI_EFEH";
+	};
+	
+publicVariable "RYD_TI_TimidIcarus";
 
 RYD_HAS_NewDestination = 
 	{
@@ -6149,6 +6534,7 @@ RYD_HAS_ManualTarget =
 		"EachFrame", 
 		
 			{
+			if (isGamePaused) exitWith {};
 			if (isNil "RYD_HAS_Chopper") exitwith {removeMissionEventHandler ["EachFrame",_thisEventHandler];};
 			if ((isNull RYD_HAS_Chopper) or {not (alive RYD_HAS_Chopper) or {(isNull (driver RYD_HAS_Chopper)) or {not (alive (driver RYD_HAS_Chopper))}}}) exitwith {removeMissionEventHandler ["EachFrame",_thisEventHandler];};
 			if ((RYD_HAS_wasHit) and {(({_x > 0.5} count ((getAllHitPointsDamage RYD_HAS_Chopper) select 2)) > 0)}) exitWith {removeMissionEventHandler ["EachFrame",_thisEventHandler];};
