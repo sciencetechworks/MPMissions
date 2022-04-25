@@ -16,14 +16,14 @@ class EditorData
 	};
 	class LayerIndexProvider
 	{
-		nextID=2225;
+		nextID=2232;
 	};
 	class Camera
 	{
-		pos[]={12211.877,199.3689,12545.541};
-		dir[]={-0.54258406,-0.4327794,0.71993369};
-		up[]={-0.26047614,0.90149981,0.34561563};
-		aside[]={0.79859543,2.9802322e-008,0.60186815};
+		pos[]={12031.968,143.93211,12475.25};
+		dir[]={-0.72210151,-0.34805971,-0.59785461};
+		up[]={-0.26809853,0.93747157,-0.22196852};
+		aside[]={-0.63773131,1.1845259e-007,0.77026433};
 	};
 };
 binarizationWanted=0;
@@ -6781,7 +6781,7 @@ class Mission
 					};
 					id=2044;
 					type="B_UAV_AI";
-					atlOffset=0.11685181;
+					atlOffset=0.00021362305;
 				};
 				class Item1
 				{
@@ -6792,12 +6792,13 @@ class Mission
 						angles[]={0,0.42545891,0};
 					};
 					side="West";
+					flags=4;
 					class Attributes
 					{
 					};
 					id=2045;
 					type="B_UAV_AI";
-					atlOffset=1.5680847;
+					atlOffset=0.00021362305;
 				};
 			};
 			class Attributes
@@ -6853,7 +6854,7 @@ class Mission
 				description="Hybrid drone";
 				reportRemoteTargets=1;
 				reportOwnPosition=1;
-				pylons="PylonRack_3Rnd_LG_scalpel[0];CUP_PylonPod_2Rnd_AIM_9L_LAU_Sidewinder_M;";
+				pylons="PylonRack_3Rnd_LG_scalpel[0];PylonRack_1Rnd_Missile_AA_04_F;";
 			};
 			id=2046;
 			type="B_UAV_02_dynamicLoadout_F";
