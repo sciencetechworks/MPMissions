@@ -16,7 +16,7 @@ class EditorData
 	};
 	class LayerIndexProvider
 	{
-		nextID=2253;
+		nextID=2267;
 	};
 	class Camera
 	{
@@ -4278,9 +4278,7 @@ class Mission
 			};
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
-				combatMode="BLUE";
-				behaviour="CARELESS";
+				init="this disableAI ""PATH"";";
 			};
 			class CrewLinks
 			{
@@ -4436,7 +4434,6 @@ class Mission
 			flags=6;
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
 				description="Artillery";
 			};
 			id=1965;
@@ -4455,7 +4452,6 @@ class Mission
 			flags=4;
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
 				description="Artillery";
 			};
 			id=1969;
@@ -4473,7 +4469,6 @@ class Mission
 			flags=4;
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
 				description="Artillery";
 			};
 			id=1973;
@@ -7500,7 +7495,6 @@ class Mission
 			flags=4;
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
 			};
 			id=2061;
 			type="B_MBT_01_arty_F";
@@ -7581,9 +7575,7 @@ class Mission
 			};
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
-				combatMode="BLUE";
-				behaviour="CARELESS";
+				init="this disableAI ""PATH"";";
 			};
 			class CrewLinks
 			{
@@ -7652,7 +7644,6 @@ class Mission
 			flags=6;
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
 				description="Sandstorm";
 			};
 			id=2066;
@@ -7670,7 +7661,6 @@ class Mission
 			flags=4;
 			class Attributes
 			{
-				init="this disableAI ""MOVE"";";
 				description="Sandstorm";
 			};
 			id=2069;
