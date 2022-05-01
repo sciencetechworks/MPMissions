@@ -16,7 +16,7 @@ class EditorData
 	};
 	class LayerIndexProvider
 	{
-		nextID=2267;
+		nextID=2274;
 	};
 	class Camera
 	{
@@ -4193,7 +4193,6 @@ class Mission
 					};
 					id=1974;
 					type="B_crew_F";
-					atlOffset=-1.5258789e-005;
 				};
 				class Item7
 				{
@@ -4204,12 +4203,12 @@ class Mission
 						angles[]={0,3.2412159,0};
 					};
 					side="West";
+					flags=4;
 					class Attributes
 					{
 					};
 					id=1975;
 					type="B_crew_F";
-					atlOffset=3.0840302;
 				};
 				class Item8
 				{
@@ -4220,12 +4219,12 @@ class Mission
 						angles[]={0,3.2412159,0};
 					};
 					side="West";
+					flags=4;
 					class Attributes
 					{
 					};
 					id=1976;
 					type="B_crew_F";
-					atlOffset=3.0840302;
 				};
 				class Item9
 				{
@@ -4242,6 +4241,7 @@ class Mission
 					};
 					id=2062;
 					type="B_crew_F";
+					atlOffset=-0.0019989014;
 				};
 				class Item10
 				{
@@ -4252,12 +4252,13 @@ class Mission
 						angles[]={0,3.0262091,0.031991884};
 					};
 					side="West";
+					flags=4;
 					class Attributes
 					{
 					};
 					id=2063;
 					type="B_crew_F";
-					atlOffset=3.083313;
+					atlOffset=-0.0019989014;
 				};
 				class Item11
 				{
@@ -4268,17 +4269,17 @@ class Mission
 						angles[]={0,3.0262091,0.031991884};
 					};
 					side="West";
+					flags=4;
 					class Attributes
 					{
 					};
 					id=2064;
 					type="B_crew_F";
-					atlOffset=3.083313;
+					atlOffset=-0.0019989014;
 				};
 			};
 			class Attributes
 			{
-				init="this disableAI ""PATH"";";
 			};
 			class CrewLinks
 			{
@@ -4434,6 +4435,7 @@ class Mission
 			flags=6;
 			class Attributes
 			{
+				init="this disableAI ""PATH"";";
 				description="Artillery";
 			};
 			id=1965;
@@ -4452,6 +4454,7 @@ class Mission
 			flags=4;
 			class Attributes
 			{
+				init="this disableAI ""PATH"";";
 				description="Artillery";
 			};
 			id=1969;
@@ -4469,6 +4472,7 @@ class Mission
 			flags=4;
 			class Attributes
 			{
+				init="this disableAI ""PATH"";";
 				description="Artillery";
 			};
 			id=1973;
@@ -7495,6 +7499,7 @@ class Mission
 			flags=4;
 			class Attributes
 			{
+				init="this disableAI ""PATH"";";
 			};
 			id=2061;
 			type="B_MBT_01_arty_F";
@@ -7532,13 +7537,12 @@ class Mission
 						angles[]={0.0017627826,0,6.2804623};
 					};
 					side="West";
-					flags=2;
+					flags=6;
 					class Attributes
 					{
 					};
 					id=2068;
 					type="B_crew_F";
-					atlOffset=2.0150604;
 				};
 				class Item2
 				{
@@ -7555,6 +7559,7 @@ class Mission
 					};
 					id=2070;
 					type="B_crew_F";
+					atlOffset=-0.0010070801;
 				};
 				class Item3
 				{
@@ -7565,12 +7570,13 @@ class Mission
 						angles[]={0.019355701,0,6.2671809};
 					};
 					side="West";
+					flags=4;
 					class Attributes
 					{
 					};
 					id=2071;
 					type="B_crew_F";
-					atlOffset=2.0153046;
+					atlOffset=-0.0010070801;
 				};
 			};
 			class Attributes
@@ -7644,6 +7650,7 @@ class Mission
 			flags=6;
 			class Attributes
 			{
+				init="this disableAI ""PATH"";";
 				description="Sandstorm";
 			};
 			id=2066;
@@ -7661,6 +7668,7 @@ class Mission
 			flags=4;
 			class Attributes
 			{
+				init="this disableAI ""PATH"";";
 				description="Sandstorm";
 			};
 			id=2069;
